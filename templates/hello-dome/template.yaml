@@ -1,0 +1,35 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/hello-dome
+  version: "0.1.0"
+  title: Hello Dome
+  summary: A minimal, runnable chat template for verifying Dome Template Registry publishing.
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/hello-dome
+  domain: productivity
+  shape: interactive-assistant
+  ui: chat
+
+app:
+  runtime:
+    pattern: chat
+    language: python
+    image_tag: dev
+  agent:
+    prompt: app/instructions.md
+    help: app/help.md
+    model: claude-haiku-4-5-20251001
+    max_tokens: 1024
+    skills: []
+    invoker:
+      kind: chat
+  options:
+    identity:
+      mode: none
+    model:
+      provider: anthropic
+      model: claude-haiku-4-5-20251001
+
