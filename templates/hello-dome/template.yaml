@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/hello-dome
-  version: "0.1.0"
+  version: "0.2.0"
   title: Hello Dome
   summary: A minimal, runnable chat template for verifying Dome Template Registry publishing.
   source:
@@ -32,4 +32,3 @@ app:
     model:
       provider: anthropic
       model: claude-haiku-4-5-20251001
-
