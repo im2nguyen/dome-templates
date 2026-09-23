@@ -1,0 +1,25 @@
+name: kitchen-sink-agent
+title: Ask questions about Dome documentation
+summary: A chat agent that searches the public Dome documentation.
+shape: interactive-assistant
+prompt_file: instructions.md
+help_file: help.md
+model: claude-haiku-4-5-20251001
+pool: kitchen-sink-pool
+max_tokens: 4096
+skills:
+  - name: answer-from-documentation
+    description: Search public documentation and answer from the relevant pages.
+    tools:
+      - domedocs/search
+      - domedocs/get_page
+invoker:
+  kind: chat
+options:
+  identity:
+    mode: none
+  model:
+    provider: anthropic
+    model: claude-haiku-4-5-20251001
+forbidden:
+  - domedocs/list_pages

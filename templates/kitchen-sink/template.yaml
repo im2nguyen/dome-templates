@@ -1,0 +1,85 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/kitchen-sink
+  version: "0.1.0"
+  title: Kitchen sink
+  summary: A complete template for exercising generate and sandbox provisioning.
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/kitchen-sink
+
+catalog:
+  gateway:
+    name: kitchen-sink
+    description: Gateway created by the kitchen-sink template
+    default: true
+
+  connections:
+    - name: domedocs
+      protocol: streamable-http
+      url: https://docs.domesystems.ai/mcp
+      auth:
+        method: none
+      permit: [search, get_page]
+      forbid: [list_pages]
+
+  model:
+    name: haiku
+    provider: anthropic
+    model_id: claude-haiku-4-5-20251001
+    secret_header: x-api-key
+    secret:
+      env: ANTHROPIC_API_KEY
+      variable: anthropic_api_key
+      label: an Anthropic API key
+
+  pool:
+    name: kitchen-sink-pool
+    # A workspace can have only one default pool. This template should coexist
+    # with the hello-dome template and other installed examples.
+    default: false
+
+  agent:
+    name: kitchen-sink-agent
+    act_as:
+      method: none
+
+  rules:
+    file: rules/agent.cedar
+
+  guards:
+    filters:
+      - name: redact-ssn
+        description: Redact US Social Security number patterns from model requests
+        redact_ssn: true
+        bind: { model: haiku, direction: request }
+
+  quotas:
+    - subject: agent
+      agent: kitchen-sink-agent
+      unit: dome_usd
+      limit: 5
+      window: daily
+      name: kitchen-sink-agent-daily-spend
+
+app:
+  runtime:
+    pattern: chat
+    language: python
+    image_tag: dev
+  agent:
+    prompt: app/instructions.md
+    help: app/help.md
+    model: claude-haiku-4-5-20251001
+    skills:
+      - name: answer-from-documentation
+        description: Search public documentation and answer from it
+        tools: [domedocs/search, domedocs/get_page]
+  options:
+    identity:
+      mode: none
+    model:
+      provider: anthropic
+      model: claude-haiku-4-5-20251001
