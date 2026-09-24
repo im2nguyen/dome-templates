@@ -12,10 +12,11 @@ variable "anthropic_api_key" {
 }
 
 resource "dome_gateway" "hello" {
-  workspace_id = var.workspace_id
-  name         = "hello-dome"
-  description  = "Gateway for the Hello Dome template"
-  is_default   = true
+  workspace_id    = var.workspace_id
+  name            = "hello-dome"
+  description     = "Gateway for the Hello Dome template"
+  is_default      = true
+  safe_tool_names = true
 }
 
 resource "dome_llm_connection" "haiku" {
