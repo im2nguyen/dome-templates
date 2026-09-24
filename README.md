@@ -8,6 +8,7 @@ Publishable, importable Dome templates maintained by
 | Template | Package |
 | --- | --- |
 | `templates/hello-dome` | `im2nguyen/hello-dome` |
+| `templates/haiku` | `im2nguyen/haiku` |
 
 ## Run a template locally
 

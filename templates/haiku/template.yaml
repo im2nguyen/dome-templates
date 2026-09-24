@@ -1,0 +1,34 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/haiku
+  version: "0.1.0"
+  title: Motivational Haiku
+  summary: A focused chat agent that turns any challenge into an original motivational haiku.
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/haiku
+  domain: productivity
+  shape: interactive-assistant
+  ui: chat
+
+app:
+  runtime:
+    pattern: chat
+    language: python
+    image_tag: dev
+  agent:
+    prompt: app/instructions.md
+    help: app/help.md
+    model: claude-haiku-4-5-20251001
+    max_tokens: 256
+    skills: []
+    invoker:
+      kind: chat
+  options:
+    identity:
+      mode: none
+    model:
+      provider: anthropic
+      model: claude-haiku-4-5-20251001
