@@ -1,0 +1,16 @@
+type: managed
+
+allowed_gateways: [chess]
+
+system_prompt:
+  path: instructions.md
+
+default_model: chess-balanced
+
+trigger_config:
+  manual: { enabled: true }
+
+rules:
+  files:
+    opponent-stockfish.cedar:
+      path: opponent-stockfish.cedar

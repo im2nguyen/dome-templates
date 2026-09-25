@@ -1,0 +1,23 @@
+type: managed
+
+allowed_gateways: [chess]
+
+act_as:
+  method: hmac
+  required: true
+  hmac_secret: var.actas_secret
+
+actas_allowed_subjects: [alex, sam]
+
+system_prompt:
+  path: instructions.md
+
+default_model: coach
+
+trigger_config:
+  manual: { enabled: true }
+
+rules:
+  files:
+    chess-coach.cedar:
+      path: chess-coach.cedar

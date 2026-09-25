@@ -12,17 +12,17 @@ variable "anthropic_api_key" {
   sensitive = true
 }
 
-resource "dome_gateway" "hello_dome" {
+resource "dome_gateway" "motivational_haiku" {
   workspace_id        = var.workspace_id
-  name                = "hello-dome"
-  description         = "Gateway for the Hello Dome template."
+  name                = "motivational-haiku"
+  description         = "Gateway for the Motivational Haiku template."
   is_default          = true
 }
 
-resource "dome_gateway_llm_pool" "hello_dome_hello_dome_pool" {
+resource "dome_gateway_llm_pool" "motivational_haiku_motivational_haiku_pool" {
   workspace_id        = var.workspace_id
-  gateway             = dome_gateway.hello_dome.name
-  llm_pool            = dome_llm_pool.hello_dome_pool.name
+  gateway             = dome_gateway.motivational_haiku.name
+  llm_pool            = dome_llm_pool.motivational_haiku_pool.name
 }
 
 resource "dome_llm_connection" "haiku" {
@@ -36,31 +36,31 @@ resource "dome_llm_connection" "haiku" {
   secret_values       = { "x-api-key" = var.anthropic_api_key }
 }
 
-resource "dome_llm_pool" "hello_dome_pool" {
+resource "dome_llm_pool" "motivational_haiku_pool" {
   workspace_id        = var.workspace_id
-  name                = "hello-dome-pool"
+  name                = "motivational-haiku-pool"
   is_default          = true
 }
 
-resource "dome_llm_pool_member" "hello_dome_pool_haiku" {
+resource "dome_llm_pool_member" "motivational_haiku_pool_haiku" {
   workspace_id        = var.workspace_id
-  pool                = dome_llm_pool.hello_dome_pool.name
+  pool                = dome_llm_pool.motivational_haiku_pool.name
   llm_connection      = dome_llm_connection.haiku.name
 }
 
-resource "dome_agent" "hello_dome" {
+resource "dome_agent" "motivational_haiku" {
   workspace_id        = var.workspace_id
-  name                = "hello-dome"
-  allowed_gateways    = [dome_gateway.hello_dome.name]
+  name                = "motivational-haiku"
+  allowed_gateways    = [dome_gateway.motivational_haiku.name]
 }
 
-resource "dome_agent_key" "hello_dome_runtime" {
+resource "dome_agent_key" "motivational_haiku_runtime" {
   workspace_id        = var.workspace_id
-  agent               = dome_agent.hello_dome.name
+  agent               = dome_agent.motivational_haiku.name
   name                = "runtime"
 }
 
-output "hello_dome_runtime_token" {
-  value     = dome_agent_key.hello_dome_runtime.token
+output "motivational_haiku_runtime_token" {
+  value     = dome_agent_key.motivational_haiku_runtime.token
   sensitive = true
 }
