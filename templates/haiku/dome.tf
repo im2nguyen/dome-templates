@@ -16,7 +16,7 @@ resource "dome_gateway" "motivational_haiku" {
   workspace_id        = var.workspace_id
   name                = "motivational-haiku"
   description         = "Gateway for the Motivational Haiku template."
-  is_default          = false
+  is_default          = true
 }
 
 resource "dome_gateway_llm_pool" "motivational_haiku_motivational_haiku_pool" {
