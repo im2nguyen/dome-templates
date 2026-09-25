@@ -44,7 +44,10 @@ pools:
 
 agents:
   - name: hello-dome
-    type: external
+    type: managed
     allowed_gateways: [hello-dome]
-    keys:
-      - name: runtime
+    system_prompt:
+      path: app/instructions.md
+    default_model: hello-dome-pool
+    trigger_config:
+      manual: { enabled: true }

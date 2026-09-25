@@ -44,7 +44,10 @@ pools:
 
 agents:
   - name: motivational-haiku
-    type: external
+    type: managed
     allowed_gateways: [motivational-haiku]
-    keys:
-      - name: runtime
+    system_prompt:
+      path: app/instructions.md
+    default_model: motivational-haiku-pool
+    trigger_config:
+      manual: { enabled: true }

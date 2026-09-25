@@ -1,4 +1,4 @@
-type: external
+type: managed
 
 allowed_gateways: [chess]
 
@@ -9,8 +9,13 @@ act_as:
 
 actas_allowed_subjects: [alex, sam]
 
-keys:
-  - name: local
+system_prompt:
+  path: instructions.md
+
+default_model: coach
+
+trigger_config:
+  manual: { enabled: true }
 
 rules:
   files:
