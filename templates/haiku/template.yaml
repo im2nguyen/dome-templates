@@ -44,4 +44,7 @@ pools:
 
 agents:
   - name: motivational-haiku
-    path: agents/motivational-haiku/agent.yaml
+    type: external
+    allowed_gateways: [motivational-haiku]
+    keys:
+      - name: runtime

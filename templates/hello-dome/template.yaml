@@ -44,4 +44,7 @@ pools:
 
 agents:
   - name: hello-dome
-    path: agents/hello-dome/agent.yaml
+    type: external
+    allowed_gateways: [hello-dome]
+    keys:
+      - name: runtime
