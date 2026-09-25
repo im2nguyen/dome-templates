@@ -1,0 +1,6 @@
+type: external
+
+allowed_gateways: [motivational-haiku]
+
+keys:
+  - name: runtime

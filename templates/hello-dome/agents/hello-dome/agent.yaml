@@ -1,0 +1,6 @@
+type: external
+
+allowed_gateways: [hello-dome]
+
+keys:
+  - name: runtime

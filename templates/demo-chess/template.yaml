@@ -63,29 +63,10 @@ pools:
 
 agents:
   - name: chess-coach
-    type: external
-    allowed_gateways: [chess]
-    act_as:
-      method: hmac
-      required: true
-      hmac_secret: var.actas_secret
-      allowed_subjects: [alex, sam]
-    keys:
-      - name: local
-    rules:
-      files:
-        chess-coach.cedar:
-          path: rules/chess-coach.cedar
+    path: agents/chess-coach/agent.yaml
 
   - name: opponent-stockfish
-    type: external
-    allowed_gateways: [chess]
-    keys:
-      - name: local
-    rules:
-      files:
-        opponent-stockfish.cedar:
-          path: rules/opponent-stockfish.cedar
+    path: agents/opponent-stockfish/agent.yaml
 
 quotas:
   - name: chess-coach daily spend
