@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/hello-dome
-  version: "0.4.0"
+  version: "0.4.1"
   slug: hello-dome
   title: Hello Dome
   summary: A minimal, runnable chat template for verifying Dome Template Registry publishing.
@@ -25,7 +25,7 @@ variables:
 gateways:
   - name: hello-dome
     description: Gateway for the Hello Dome template.
-    is_default: true
+    is_default: false
     pools: [hello-dome-pool]
 
 models:
@@ -39,7 +39,7 @@ models:
 
 pools:
   - name: hello-dome-pool
-    is_default: true
+    is_default: false
     members: [haiku]
 
 agents:
