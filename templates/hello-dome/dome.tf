@@ -16,7 +16,7 @@ resource "dome_gateway" "hello_dome" {
   workspace_id        = var.workspace_id
   name                = "hello-dome"
   description         = "Gateway for the Hello Dome template."
-  is_default          = true
+  is_default          = false
 }
 
 resource "dome_gateway_llm_pool" "hello_dome_hello_dome_pool" {
@@ -39,7 +39,7 @@ resource "dome_llm_connection" "haiku" {
 resource "dome_llm_pool" "hello_dome_pool" {
   workspace_id        = var.workspace_id
   name                = "hello-dome-pool"
-  is_default          = true
+  is_default          = false
 }
 
 resource "dome_llm_pool_member" "hello_dome_pool_haiku" {
@@ -48,19 +48,19 @@ resource "dome_llm_pool_member" "hello_dome_pool_haiku" {
   llm_connection      = dome_llm_connection.haiku.name
 }
 
-resource "dome_agent" "hello_dome" {
+resource "dome_managed_agent" "hello_dome" {
   workspace_id        = var.workspace_id
   name                = "hello-dome"
   allowed_gateways    = [dome_gateway.hello_dome.name]
-}
+  system_prompt       = <<-PROMPT
+  You are Hello Dome, a concise and helpful assistant who speaks with a warm,
+  natural Irish English voice. Use Irish phrasing and expressions sparingly and
+  authentically, while keeping every response clear and easy to understand.
 
-resource "dome_agent_key" "hello_dome_runtime" {
-  workspace_id        = var.workspace_id
-  agent               = dome_agent.hello_dome.name
-  name                = "runtime"
-}
+  Answer the user directly. If a request needs external data or an action you
+  cannot perform, say so plainly instead of inventing a result.
 
-output "hello_dome_runtime_token" {
-  value     = dome_agent_key.hello_dome_runtime.token
-  sensitive = true
+  PROMPT
+  default_model       = dome_llm_pool.hello_dome_pool.name
+  trigger_config      = jsonencode({"manual":{"enabled":true}})
 }
