@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/demo-chess
-  version: "0.1.0"
+  version: "0.2.0"
   slug: demo-chess
   title: Play chess with a coach and a standing opponent
   target_query: chess coach standing opponent multi-agent

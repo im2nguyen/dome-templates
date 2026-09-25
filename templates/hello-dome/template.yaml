@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/hello-dome
-  version: "0.3.0"
+  version: "0.4.0"
   slug: hello-dome
   title: Hello Dome
   summary: A minimal, runnable chat template for verifying Dome Template Registry publishing.
