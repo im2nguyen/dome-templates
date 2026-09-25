@@ -1,0 +1,106 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/demo-chess
+  version: "0.1.0"
+  slug: demo-chess
+  title: Play chess with a coach and a standing opponent
+  target_query: chess coach standing opponent multi-agent
+  summary: A two-agent chess app with delegated coaching and a standing Stockfish opponent.
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/demo-chess
+  ui: chat
+  tags:
+    domain: games
+    shape: interactive-assistant
+    business_pattern: orchestrates
+    governance_interest: [act-as, tool-scoped-access, model-scoped-access]
+
+variables:
+  stockfish_mcp_url:
+    description: The public /mcp URL exposed by the demo-chess application.
+  anthropic_api_key:
+    sensitive: true
+  actas_secret:
+    sensitive: true
+
+gateways:
+  - name: chess
+    description: Chess coach and opponent access to Stockfish and approved model pools.
+    is_default: true
+    tools:
+      - tool_connection: stockfish
+        tools: [chess_engine]
+    pools: [coach, chess-fast, chess-balanced, chess-strong]
+
+tool_connections:
+  - name: stockfish
+    protocol: streamable-http
+    url: var.stockfish_mcp_url
+    auth_method: none
+    credential_type: none
+
+models:
+  - name: sonnet
+    provider_id: anthropic
+    provider_config: { model: claude-sonnet-4-6 }
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: x-api-key
+    secret_values: { x-api-key: var.anthropic_api_key }
+
+pools:
+  - name: coach
+    members: [sonnet]
+  - name: chess-fast
+    members: [sonnet]
+  - name: chess-balanced
+    members: [sonnet]
+  - name: chess-strong
+    members: [sonnet]
+
+agents:
+  - name: chess-coach
+    type: external
+    allowed_gateways: [chess]
+    act_as:
+      method: hmac
+      required: true
+      hmac_secret: var.actas_secret
+      allowed_subjects: [alex, sam]
+    keys:
+      - name: local
+    rules:
+      files:
+        chess-coach.cedar:
+          path: rules/chess-coach.cedar
+
+  - name: opponent-stockfish
+    type: external
+    allowed_gateways: [chess]
+    keys:
+      - name: local
+    rules:
+      files:
+        opponent-stockfish.cedar:
+          path: rules/opponent-stockfish.cedar
+
+quotas:
+  - name: chess-coach daily spend
+    dimension: llm
+    unit: dome_usd
+    subject_type: agent
+    subject: chess-coach
+    scope: total
+    window: daily
+    limit_amount: 5000000
+  - name: opponent-stockfish daily spend
+    dimension: llm
+    unit: dome_usd
+    subject_type: agent
+    subject: opponent-stockfish
+    scope: total
+    window: daily
+    limit_amount: 2000000

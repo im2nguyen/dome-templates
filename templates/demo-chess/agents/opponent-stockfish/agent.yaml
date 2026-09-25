@@ -1,0 +1,23 @@
+name: opponent-stockfish
+title: Standing Stockfish opponent
+summary: Selects a Black move without acting on behalf of the player.
+shape: interactive-assistant
+runner:
+  pattern: chat
+  language: python
+prompt_file: instructions.md
+help_file: help.md
+model: claude-sonnet-4-6
+pool: chess-balanced
+max_tokens: 512
+skills:
+  - name: choose-move
+    description: Analyze a chess position and choose one legal Black move.
+    tools: [stockfish/chess_engine]
+invoker:
+  kind: chat
+options:
+  identity: { mode: none }
+  model:
+    provider: anthropic
+    model: claude-sonnet-4-6

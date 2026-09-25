@@ -2,14 +2,14 @@ apiVersion: templates.domesystems.ai/v1
 kind: Template
 
 metadata:
-  name: im2nguyen/hello-dome
-  version: "0.3.0"
-  slug: hello-dome
-  title: Hello Dome
-  summary: A minimal, runnable chat template for verifying Dome Template Registry publishing.
+  name: im2nguyen/haiku
+  version: "0.2.0"
+  slug: haiku
+  title: Motivational Haiku
+  summary: A focused chat agent that turns any challenge into an original motivational haiku.
   source:
     repository: https://github.com/im2nguyen/dome-templates
-    path: templates/hello-dome
+    path: templates/haiku
   ui: chat
   tags:
     domain: productivity
@@ -23,10 +23,10 @@ variables:
     description: An Anthropic API key.
 
 gateways:
-  - name: hello-dome
-    description: Gateway for the Hello Dome template.
+  - name: motivational-haiku
+    description: Gateway for the Motivational Haiku template.
     is_default: true
-    pools: [hello-dome-pool]
+    pools: [motivational-haiku-pool]
 
 models:
   - name: haiku
@@ -38,13 +38,13 @@ models:
     secret_values: { x-api-key: var.anthropic_api_key }
 
 pools:
-  - name: hello-dome-pool
+  - name: motivational-haiku-pool
     is_default: true
     members: [haiku]
 
 agents:
-  - name: hello-dome
+  - name: motivational-haiku
     type: external
-    allowed_gateways: [hello-dome]
+    allowed_gateways: [motivational-haiku]
     keys:
       - name: runtime

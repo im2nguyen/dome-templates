@@ -1,0 +1,25 @@
+name: chess-coach
+title: Chess coach
+summary: Gives advice about the current position on behalf of the signed-in player.
+shape: interactive-assistant
+runner:
+  pattern: chat
+  language: python
+prompt_file: instructions.md
+help_file: help.md
+model: claude-sonnet-4-6
+pool: coach
+max_tokens: 1024
+skills:
+  - name: analyze-position
+    description: Inspect a chess position with Stockfish before offering advice.
+    tools: [stockfish/chess_engine]
+invoker:
+  kind: chat
+options:
+  identity:
+    mode: act-as
+    personas: [{ id: alex }, { id: sam }]
+  model:
+    provider: anthropic
+    model: claude-sonnet-4-6
