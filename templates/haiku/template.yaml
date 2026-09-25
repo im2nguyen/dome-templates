@@ -3,14 +3,14 @@ kind: Template
 
 metadata:
   name: im2nguyen/haiku
-  version: "0.3.0"
+  version: "0.4.0"
   slug: haiku
   title: Motivational Haiku
   summary: A focused chat agent that turns any challenge into an original motivational haiku.
   source:
     repository: https://github.com/im2nguyen/dome-templates
     path: templates/haiku
-  ui: chat
+  ui: run
   tags:
     domain: productivity
     shape: interactive-assistant
