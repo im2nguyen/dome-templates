@@ -1,6 +1,6 @@
 type: managed
 
-allowed_gateways: [chess]
+gateway: chess
 
 act_as:
   method: hmac
@@ -13,9 +13,6 @@ system_prompt:
   path: instructions.md
 
 default_model: coach
-
-trigger_config:
-  manual: { enabled: true }
 
 rules:
   files:
