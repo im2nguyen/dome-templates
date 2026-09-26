@@ -1,14 +1,11 @@
 type: managed
 
-allowed_gateways: [chess]
+gateway: chess
 
 system_prompt:
   path: instructions.md
 
 default_model: chess-balanced
-
-trigger_config:
-  manual: { enabled: true }
 
 rules:
   files:
