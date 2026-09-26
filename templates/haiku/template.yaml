@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/haiku
-  version: "0.4.0"
+  version: "0.4.3"
   slug: haiku
   title: Motivational Haiku
   summary: A focused chat agent that turns any challenge into an original motivational haiku.
@@ -39,15 +39,12 @@ models:
 
 pools:
   - name: motivational-haiku-pool
-    is_default: true
     members: [haiku]
 
 agents:
   - name: motivational-haiku
     type: managed
-    allowed_gateways: [motivational-haiku]
+    gateway: motivational-haiku
     system_prompt:
       path: app/instructions.md
     default_model: motivational-haiku-pool
-    trigger_config:
-      manual: { enabled: true }

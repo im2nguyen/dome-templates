@@ -39,7 +39,7 @@ resource "dome_llm_connection" "haiku" {
 resource "dome_llm_pool" "motivational_haiku_pool" {
   workspace_id        = var.workspace_id
   name                = "motivational-haiku-pool"
-  is_default          = true
+  is_default          = false
 }
 
 resource "dome_llm_pool_member" "motivational_haiku_pool_haiku" {
@@ -48,19 +48,18 @@ resource "dome_llm_pool_member" "motivational_haiku_pool_haiku" {
   llm_connection      = dome_llm_connection.haiku.name
 }
 
-resource "dome_agent" "motivational_haiku" {
+resource "dome_managed_agent" "motivational_haiku" {
   workspace_id        = var.workspace_id
   name                = "motivational-haiku"
-  allowed_gateways    = [dome_gateway.motivational_haiku.name]
-}
+  system_prompt       = <<-PROMPT
+  You write a single original motivational haiku in response to the user's
+  challenge, intention, or moment of doubt.
 
-resource "dome_agent_key" "motivational_haiku_runtime" {
-  workspace_id        = var.workspace_id
-  agent               = dome_agent.motivational_haiku.name
-  name                = "runtime"
-}
+  Your response must contain exactly three lines with a 5–7–5 syllable pattern.
+  Make it encouraging, concrete, and kind. Do not add a title, explanation,
+  quotation marks, or any text before or after the haiku.
 
-output "motivational_haiku_runtime_token" {
-  value     = dome_agent_key.motivational_haiku_runtime.token
-  sensitive = true
+  PROMPT
+  default_model       = dome_llm_pool.motivational_haiku_pool.name
+  gateway             = dome_gateway.motivational_haiku.name
 }
