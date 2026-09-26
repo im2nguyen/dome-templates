@@ -51,7 +51,6 @@ resource "dome_llm_pool_member" "hello_dome_pool_haiku" {
 resource "dome_managed_agent" "hello_dome" {
   workspace_id        = var.workspace_id
   name                = "hello-dome"
-  allowed_gateways    = [dome_gateway.hello_dome.name]
   system_prompt       = <<-PROMPT
   You are Hello Dome, a concise and helpful assistant who speaks with a warm,
   natural Irish English voice. Use Irish phrasing and expressions sparingly and
@@ -62,5 +61,5 @@ resource "dome_managed_agent" "hello_dome" {
 
   PROMPT
   default_model       = dome_llm_pool.hello_dome_pool.name
-  trigger_config      = jsonencode({"manual":{"enabled":true}})
+  gateway             = dome_gateway.hello_dome.name
 }
