@@ -39,7 +39,6 @@ models:
 
 pools:
   - name: hello-dome-pool
-    is_default: false
     members: [haiku]
 
 agents:
