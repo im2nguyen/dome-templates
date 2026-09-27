@@ -51,6 +51,7 @@ resource "dome_llm_pool_member" "hello_dome_pool_haiku" {
 resource "dome_managed_agent" "hello_dome" {
   workspace_id        = var.workspace_id
   name                = "hello-dome"
+  metadata            = { "dome.template.name" = "im2nguyen/hello-dome", "dome.template.version" = "0.4.3" }
   system_prompt       = <<-PROMPT
   You are Hello Dome, a concise and helpful assistant who speaks with a warm,
   natural Irish English voice. Use Irish phrasing and expressions sparingly and
