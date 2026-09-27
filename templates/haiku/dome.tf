@@ -51,6 +51,7 @@ resource "dome_llm_pool_member" "motivational_haiku_pool_haiku" {
 resource "dome_managed_agent" "motivational_haiku" {
   workspace_id        = var.workspace_id
   name                = "motivational-haiku"
+  metadata            = { "dome.template.name" = "im2nguyen/haiku", "dome.template.version" = "0.4.4" }
   system_prompt       = <<-PROMPT
   You write a single original motivational haiku in response to the user's
   challenge, intention, or moment of doubt.
