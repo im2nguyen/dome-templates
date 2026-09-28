@@ -1,0 +1,82 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/tinyfish
+  version: "0.1.0"
+  slug: tinyfish
+  title: Answer questions from the live web
+  target_query: tinyfish web research agent
+  summary: A managed research agent that searches the live web, reads sources, and answers with citations.
+  visibility: unlisted
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/tinyfish
+  ui: chat
+  tags:
+    domain: research
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [read-only, tool-scoped-access, model-scoped-access]
+
+variables:
+  tinyfish_api_key:
+    sensitive: true
+    description: A TinyFish API key, including the Bearer prefix if required by your TinyFish account.
+  anthropic_api_key:
+    sensitive: true
+    description: An Anthropic API key.
+
+gateways:
+  - name: web-research
+    description: Read-only TinyFish access for the web researcher.
+    is_default: true
+    safe_tool_names: true
+    tools:
+      - tool_connection: tinyfish
+        tools: [search, fetch_content]
+    pools: [researcher-pool]
+
+tool_connections:
+  - name: tinyfish
+    protocol: streamable-http
+    url: https://agent.tinyfish.ai/mcp
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.tinyfish_api_key }
+
+models:
+  - name: sonnet
+    provider_id: anthropic
+    provider_config: { model: claude-sonnet-5 }
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: x-api-key
+    secret_values: { x-api-key: var.anthropic_api_key }
+
+pools:
+  - name: researcher-pool
+    members: [sonnet]
+
+agents:
+  - name: web-researcher
+    type: managed
+    gateway: web-research
+    system_prompt:
+      path: app/instructions.md
+    default_model: researcher-pool
+    rules:
+      files:
+        researcher.cedar:
+          path: rules/researcher.cedar
+
+quotas:
+  - name: web-researcher daily spend
+    dimension: llm
+    unit: dome_usd
+    subject_type: agent
+    subject: web-researcher
+    scope: total
+    window: daily
+    limit_amount: 5000000

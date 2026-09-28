@@ -9,14 +9,10 @@ variable "workspace_id" { type = string }
 
 variable "stockfish_mcp_url" {
   type      = string
+  default   = "https://demo-mcp.domesystems.ai/chess/mcp"
 }
 
 variable "anthropic_api_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "actas_secret" {
   type      = string
   sensitive = true
 }
@@ -26,6 +22,7 @@ resource "dome_gateway" "chess" {
   name                = "chess"
   description         = "Chess coach and opponent access to Stockfish and approved model pools."
   is_default          = true
+  safe_tool_names     = true
 }
 
 resource "dome_gateway_tool" "chess_stockfish_chess_engine" {
@@ -63,7 +60,7 @@ resource "dome_mcp_connection" "stockfish" {
   workspace_id        = var.workspace_id
   name                = "stockfish"
   protocol            = "streamable-http"
-  url                 = "var.stockfish_mcp_url"
+  url                 = var.stockfish_mcp_url
   auth_method         = "none"
   credential_type     = "none"
 }
@@ -127,18 +124,25 @@ resource "dome_llm_pool_member" "chess_strong_sonnet" {
   llm_connection      = dome_llm_connection.sonnet.name
 }
 
-resource "dome_agent" "chess_coach" {
+resource "dome_managed_agent" "chess_coach" {
   workspace_id        = var.workspace_id
   name                = "chess-coach"
-  allowed_gateways    = [dome_gateway.chess.name]
-  act_as              = { method = "hmac", required = true }
-  act_as_hmac_secret  = var.actas_secret
-  actas_allowed_subjects = ["alex", "sam"]
+  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.5" }
+  system_prompt       = <<-PROMPT
+  You are a patient chess coach. Before recommending a move, analyze the supplied
+  position with Stockfish. Explain the idea in language appropriate for the
+  player, then give one concrete variation in algebraic notation.
+
+  You provide advice; never make a move for the player.
+
+  PROMPT
+  default_model       = dome_llm_pool.coach.name
+  gateway             = dome_gateway.chess.name
 }
 
 resource "dome_agent_rules_bundle" "chess_coach" {
   workspace_id        = var.workspace_id
-  agent               = dome_agent.chess_coach.name
+  agent               = dome_managed_agent.chess_coach.name
   files = {
     "chess-coach.cedar" = <<-CEDAR
     // Delegated coach: discover the engine, call it, and use only the coaching pool.
@@ -166,21 +170,23 @@ resource "dome_agent_rules_bundle" "chess_coach" {
   }
 }
 
-resource "dome_agent_key" "chess_coach_local" {
-  workspace_id        = var.workspace_id
-  agent               = dome_agent.chess_coach.name
-  name                = "local"
-}
-
-resource "dome_agent" "opponent_stockfish" {
+resource "dome_managed_agent" "opponent_stockfish" {
   workspace_id        = var.workspace_id
   name                = "opponent-stockfish"
-  allowed_gateways    = [dome_gateway.chess.name]
+  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.5" }
+  system_prompt       = <<-PROMPT
+  You are the standing Black opponent in a chess game. Use Stockfish to analyze
+  the position and return exactly one legal move in algebraic notation. Do not
+  explain your move unless asked.
+
+  PROMPT
+  default_model       = dome_llm_pool.chess_balanced.name
+  gateway             = dome_gateway.chess.name
 }
 
 resource "dome_agent_rules_bundle" "opponent_stockfish" {
   workspace_id        = var.workspace_id
-  agent               = dome_agent.opponent_stockfish.name
+  agent               = dome_managed_agent.opponent_stockfish.name
   files = {
     "opponent-stockfish.cedar" = <<-CEDAR
     // Standing opponent: discover the engine and choose only an opponent pool.
@@ -209,18 +215,12 @@ resource "dome_agent_rules_bundle" "opponent_stockfish" {
   }
 }
 
-resource "dome_agent_key" "opponent_stockfish_local" {
-  workspace_id        = var.workspace_id
-  agent               = dome_agent.opponent_stockfish.name
-  name                = "local"
-}
-
 resource "dome_quota" "chess_coach_daily_spend" {
   workspace_id        = var.workspace_id
   dimension           = "llm"
   unit                = "dome_usd"
   subject_type        = "agent"
-  subject             = dome_agent.chess_coach.name
+  subject             = dome_managed_agent.chess_coach.name
   scope               = "total"
   window              = "daily"
   limit_amount        = 5000000
@@ -232,19 +232,9 @@ resource "dome_quota" "opponent_stockfish_daily_spend" {
   dimension           = "llm"
   unit                = "dome_usd"
   subject_type        = "agent"
-  subject             = dome_agent.opponent_stockfish.name
+  subject             = dome_managed_agent.opponent_stockfish.name
   scope               = "total"
   window              = "daily"
   limit_amount        = 2000000
   name                = "opponent-stockfish daily spend"
-}
-
-output "chess_coach_local_token" {
-  value     = dome_agent_key.chess_coach_local.token
-  sensitive = true
-}
-
-output "opponent_stockfish_local_token" {
-  value     = dome_agent_key.opponent_stockfish_local.token
-  sensitive = true
 }

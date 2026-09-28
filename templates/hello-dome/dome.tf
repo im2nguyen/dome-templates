@@ -13,23 +13,24 @@ variable "anthropic_api_key" {
 }
 
 resource "dome_gateway" "hello_dome" {
-  workspace_id        = var.workspace_id
-  name                = "hello-dome"
-  description         = "Gateway for the Hello Dome template."
-  is_default          = true
+  workspace_id    = var.workspace_id
+  name            = "hello-dome"
+  description     = "Gateway for the Hello Dome template."
+  is_default      = false
+  safe_tool_names = true
 }
 
 resource "dome_gateway_llm_pool" "hello_dome_hello_dome_pool" {
-  workspace_id        = var.workspace_id
-  gateway             = dome_gateway.hello_dome.name
-  llm_pool            = dome_llm_pool.hello_dome_pool.name
+  workspace_id = var.workspace_id
+  gateway      = dome_gateway.hello_dome.name
+  llm_pool     = dome_llm_pool.hello_dome_pool.name
 }
 
 resource "dome_llm_connection" "haiku" {
   workspace_id        = var.workspace_id
   name                = "haiku"
   provider_id         = "anthropic"
-  provider_config     = jsonencode({"model":"claude-haiku-4-5-20251001"})
+  provider_config     = jsonencode({ "model" : "claude-haiku-4-5-20251001" })
   auth_method         = "api-key"
   credential_type     = "shared"
   managed_header_name = "x-api-key"
@@ -37,30 +38,30 @@ resource "dome_llm_connection" "haiku" {
 }
 
 resource "dome_llm_pool" "hello_dome_pool" {
-  workspace_id        = var.workspace_id
-  name                = "hello-dome-pool"
-  is_default          = true
+  workspace_id = var.workspace_id
+  name         = "hello-dome-pool"
+  is_default   = false
 }
 
 resource "dome_llm_pool_member" "hello_dome_pool_haiku" {
-  workspace_id        = var.workspace_id
-  pool                = dome_llm_pool.hello_dome_pool.name
-  llm_connection      = dome_llm_connection.haiku.name
+  workspace_id   = var.workspace_id
+  pool           = dome_llm_pool.hello_dome_pool.name
+  llm_connection = dome_llm_connection.haiku.name
 }
 
-resource "dome_agent" "hello_dome" {
-  workspace_id        = var.workspace_id
-  name                = "hello-dome"
-  allowed_gateways    = [dome_gateway.hello_dome.name]
-}
+resource "dome_managed_agent" "hello_dome" {
+  workspace_id  = var.workspace_id
+  name          = "hello-dome"
+  metadata      = { "dome.template.name" = "im2nguyen/hello-dome", "dome.template.version" = "0.4.4" }
+  system_prompt = <<-PROMPT
+  You are Hello Dome, a concise and helpful assistant who speaks with a warm,
+  natural Irish English voice. Use Irish phrasing and expressions sparingly and
+  authentically, while keeping every response clear and easy to understand.
 
-resource "dome_agent_key" "hello_dome_runtime" {
-  workspace_id        = var.workspace_id
-  agent               = dome_agent.hello_dome.name
-  name                = "runtime"
-}
+  Answer the user directly. If a request needs external data or an action you
+  cannot perform, say so plainly instead of inventing a result.
 
-output "hello_dome_runtime_token" {
-  value     = dome_agent_key.hello_dome_runtime.token
-  sensitive = true
+  PROMPT
+  default_model = dome_llm_pool.hello_dome_pool.name
+  gateway       = dome_gateway.hello_dome.name
 }

@@ -13,23 +13,24 @@ variable "anthropic_api_key" {
 }
 
 resource "dome_gateway" "motivational_haiku" {
-  workspace_id        = var.workspace_id
-  name                = "motivational-haiku"
-  description         = "Gateway for the Motivational Haiku template."
-  is_default          = true
+  workspace_id    = var.workspace_id
+  name            = "motivational-haiku"
+  description     = "Gateway for the Motivational Haiku template."
+  is_default      = true
+  safe_tool_names = true
 }
 
 resource "dome_gateway_llm_pool" "motivational_haiku_motivational_haiku_pool" {
-  workspace_id        = var.workspace_id
-  gateway             = dome_gateway.motivational_haiku.name
-  llm_pool            = dome_llm_pool.motivational_haiku_pool.name
+  workspace_id = var.workspace_id
+  gateway      = dome_gateway.motivational_haiku.name
+  llm_pool     = dome_llm_pool.motivational_haiku_pool.name
 }
 
 resource "dome_llm_connection" "haiku" {
   workspace_id        = var.workspace_id
   name                = "haiku"
   provider_id         = "anthropic"
-  provider_config     = jsonencode({"model":"claude-haiku-4-5-20251001"})
+  provider_config     = jsonencode({ "model" : "claude-haiku-4-5-20251001" })
   auth_method         = "api-key"
   credential_type     = "shared"
   managed_header_name = "x-api-key"
@@ -37,30 +38,30 @@ resource "dome_llm_connection" "haiku" {
 }
 
 resource "dome_llm_pool" "motivational_haiku_pool" {
-  workspace_id        = var.workspace_id
-  name                = "motivational-haiku-pool"
-  is_default          = true
+  workspace_id = var.workspace_id
+  name         = "motivational-haiku-pool"
+  is_default   = false
 }
 
 resource "dome_llm_pool_member" "motivational_haiku_pool_haiku" {
-  workspace_id        = var.workspace_id
-  pool                = dome_llm_pool.motivational_haiku_pool.name
-  llm_connection      = dome_llm_connection.haiku.name
+  workspace_id   = var.workspace_id
+  pool           = dome_llm_pool.motivational_haiku_pool.name
+  llm_connection = dome_llm_connection.haiku.name
 }
 
-resource "dome_agent" "motivational_haiku" {
-  workspace_id        = var.workspace_id
-  name                = "motivational-haiku"
-  allowed_gateways    = [dome_gateway.motivational_haiku.name]
-}
+resource "dome_managed_agent" "motivational_haiku" {
+  workspace_id  = var.workspace_id
+  name          = "motivational-haiku"
+  metadata      = { "dome.template.name" = "im2nguyen/haiku", "dome.template.version" = "0.4.5" }
+  system_prompt = <<-PROMPT
+  You write a single original motivational haiku in response to the user's
+  challenge, intention, or moment of doubt.
 
-resource "dome_agent_key" "motivational_haiku_runtime" {
-  workspace_id        = var.workspace_id
-  agent               = dome_agent.motivational_haiku.name
-  name                = "runtime"
-}
+  Your response must contain exactly three lines with a 5–7–5 syllable pattern.
+  Make it encouraging, concrete, and kind. Do not add a title, explanation,
+  quotation marks, or any text before or after the haiku.
 
-output "motivational_haiku_runtime_token" {
-  value     = dome_agent_key.motivational_haiku_runtime.token
-  sensitive = true
+  PROMPT
+  default_model = dome_llm_pool.motivational_haiku_pool.name
+  gateway       = dome_gateway.motivational_haiku.name
 }

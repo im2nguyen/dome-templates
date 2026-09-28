@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/demo-chess
-  version: "0.2.0"
+  version: "0.2.5"
   slug: demo-chess
   title: Play chess with a coach and a standing opponent
   target_query: chess coach standing opponent multi-agent
@@ -13,23 +13,23 @@ metadata:
     path: templates/demo-chess
   ui: chat
   tags:
-    domain: games
+    domain: miscellaneous
     shape: interactive-assistant
     business_pattern: orchestrates
-    governance_interest: [act-as, tool-scoped-access, model-scoped-access]
+    governance_interest: [tool-scoped-access, model-scoped-access]
 
 variables:
   stockfish_mcp_url:
+    default: https://demo-mcp.domesystems.ai/chess/mcp
     description: The public /mcp URL exposed by the demo-chess application.
   anthropic_api_key:
-    sensitive: true
-  actas_secret:
     sensitive: true
 
 gateways:
   - name: chess
     description: Chess coach and opponent access to Stockfish and approved model pools.
     is_default: true
+    safe_tool_names: true
     tools:
       - tool_connection: stockfish
         tools: [chess_engine]
