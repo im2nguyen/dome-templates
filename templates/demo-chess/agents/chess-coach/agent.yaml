@@ -2,13 +2,6 @@ type: managed
 
 gateway: chess
 
-act_as:
-  method: hmac
-  required: true
-  hmac_secret: var.actas_secret
-
-actas_allowed_subjects: [alex, sam]
-
 system_prompt:
   path: instructions.md
 
