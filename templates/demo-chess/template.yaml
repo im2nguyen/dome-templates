@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/demo-chess
-  version: "0.2.1"
+  version: "0.2.2"
   slug: demo-chess
   title: Play chess with a coach and a standing opponent
   target_query: chess coach standing opponent multi-agent
@@ -30,6 +30,7 @@ gateways:
   - name: chess
     description: Chess coach and opponent access to Stockfish and approved model pools.
     is_default: true
+    safe_tool_names: true
     tools:
       - tool_connection: stockfish
         tools: [chess_engine]

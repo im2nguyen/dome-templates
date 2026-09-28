@@ -8,7 +8,7 @@ terraform {
 variable "workspace_id" { type = string }
 
 variable "stockfish_mcp_url" {
-  type      = string
+  type = string
 }
 
 variable "anthropic_api_key" {
@@ -22,57 +22,58 @@ variable "actas_secret" {
 }
 
 resource "dome_gateway" "chess" {
-  workspace_id        = var.workspace_id
-  name                = "chess"
-  description         = "Chess coach and opponent access to Stockfish and approved model pools."
-  is_default          = true
+  workspace_id    = var.workspace_id
+  name            = "chess"
+  description     = "Chess coach and opponent access to Stockfish and approved model pools."
+  is_default      = true
+  safe_tool_names = true
 }
 
 resource "dome_gateway_tool" "chess_stockfish_chess_engine" {
-  workspace_id        = var.workspace_id
-  gateway             = dome_gateway.chess.name
-  mcp_connection      = dome_mcp_connection.stockfish.name
-  tool                = "chess_engine"
+  workspace_id   = var.workspace_id
+  gateway        = dome_gateway.chess.name
+  mcp_connection = dome_mcp_connection.stockfish.name
+  tool           = "chess_engine"
 }
 
 resource "dome_gateway_llm_pool" "chess_coach" {
-  workspace_id        = var.workspace_id
-  gateway             = dome_gateway.chess.name
-  llm_pool            = dome_llm_pool.coach.name
+  workspace_id = var.workspace_id
+  gateway      = dome_gateway.chess.name
+  llm_pool     = dome_llm_pool.coach.name
 }
 
 resource "dome_gateway_llm_pool" "chess_chess_fast" {
-  workspace_id        = var.workspace_id
-  gateway             = dome_gateway.chess.name
-  llm_pool            = dome_llm_pool.chess_fast.name
+  workspace_id = var.workspace_id
+  gateway      = dome_gateway.chess.name
+  llm_pool     = dome_llm_pool.chess_fast.name
 }
 
 resource "dome_gateway_llm_pool" "chess_chess_balanced" {
-  workspace_id        = var.workspace_id
-  gateway             = dome_gateway.chess.name
-  llm_pool            = dome_llm_pool.chess_balanced.name
+  workspace_id = var.workspace_id
+  gateway      = dome_gateway.chess.name
+  llm_pool     = dome_llm_pool.chess_balanced.name
 }
 
 resource "dome_gateway_llm_pool" "chess_chess_strong" {
-  workspace_id        = var.workspace_id
-  gateway             = dome_gateway.chess.name
-  llm_pool            = dome_llm_pool.chess_strong.name
+  workspace_id = var.workspace_id
+  gateway      = dome_gateway.chess.name
+  llm_pool     = dome_llm_pool.chess_strong.name
 }
 
 resource "dome_mcp_connection" "stockfish" {
-  workspace_id        = var.workspace_id
-  name                = "stockfish"
-  protocol            = "streamable-http"
-  url                 = "var.stockfish_mcp_url"
-  auth_method         = "none"
-  credential_type     = "none"
+  workspace_id    = var.workspace_id
+  name            = "stockfish"
+  protocol        = "streamable-http"
+  url             = var.stockfish_mcp_url
+  auth_method     = "none"
+  credential_type = "none"
 }
 
 resource "dome_llm_connection" "sonnet" {
   workspace_id        = var.workspace_id
   name                = "sonnet"
   provider_id         = "anthropic"
-  provider_config     = jsonencode({"model":"claude-sonnet-4-6"})
+  provider_config     = jsonencode({ "model" : "claude-sonnet-4-6" })
   auth_method         = "api-key"
   credential_type     = "shared"
   managed_header_name = "x-api-key"
@@ -80,61 +81,61 @@ resource "dome_llm_connection" "sonnet" {
 }
 
 resource "dome_llm_pool" "coach" {
-  workspace_id        = var.workspace_id
-  name                = "coach"
-  is_default          = false
+  workspace_id = var.workspace_id
+  name         = "coach"
+  is_default   = false
 }
 
 resource "dome_llm_pool_member" "coach_sonnet" {
-  workspace_id        = var.workspace_id
-  pool                = dome_llm_pool.coach.name
-  llm_connection      = dome_llm_connection.sonnet.name
+  workspace_id   = var.workspace_id
+  pool           = dome_llm_pool.coach.name
+  llm_connection = dome_llm_connection.sonnet.name
 }
 
 resource "dome_llm_pool" "chess_fast" {
-  workspace_id        = var.workspace_id
-  name                = "chess-fast"
-  is_default          = false
+  workspace_id = var.workspace_id
+  name         = "chess-fast"
+  is_default   = false
 }
 
 resource "dome_llm_pool_member" "chess_fast_sonnet" {
-  workspace_id        = var.workspace_id
-  pool                = dome_llm_pool.chess_fast.name
-  llm_connection      = dome_llm_connection.sonnet.name
+  workspace_id   = var.workspace_id
+  pool           = dome_llm_pool.chess_fast.name
+  llm_connection = dome_llm_connection.sonnet.name
 }
 
 resource "dome_llm_pool" "chess_balanced" {
-  workspace_id        = var.workspace_id
-  name                = "chess-balanced"
-  is_default          = false
+  workspace_id = var.workspace_id
+  name         = "chess-balanced"
+  is_default   = false
 }
 
 resource "dome_llm_pool_member" "chess_balanced_sonnet" {
-  workspace_id        = var.workspace_id
-  pool                = dome_llm_pool.chess_balanced.name
-  llm_connection      = dome_llm_connection.sonnet.name
+  workspace_id   = var.workspace_id
+  pool           = dome_llm_pool.chess_balanced.name
+  llm_connection = dome_llm_connection.sonnet.name
 }
 
 resource "dome_llm_pool" "chess_strong" {
-  workspace_id        = var.workspace_id
-  name                = "chess-strong"
-  is_default          = false
+  workspace_id = var.workspace_id
+  name         = "chess-strong"
+  is_default   = false
 }
 
 resource "dome_llm_pool_member" "chess_strong_sonnet" {
-  workspace_id        = var.workspace_id
-  pool                = dome_llm_pool.chess_strong.name
-  llm_connection      = dome_llm_connection.sonnet.name
+  workspace_id   = var.workspace_id
+  pool           = dome_llm_pool.chess_strong.name
+  llm_connection = dome_llm_connection.sonnet.name
 }
 
 resource "dome_managed_agent" "chess_coach" {
-  workspace_id        = var.workspace_id
-  name                = "chess-coach"
-  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.1" }
-  act_as              = { method = "hmac", required = true }
-  act_as_hmac_secret  = var.actas_secret
+  workspace_id           = var.workspace_id
+  name                   = "chess-coach"
+  metadata               = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.2" }
+  act_as                 = { method = "hmac", required = true }
+  act_as_hmac_secret     = var.actas_secret
   actas_allowed_subjects = ["alex", "sam"]
-  system_prompt       = <<-PROMPT
+  system_prompt          = <<-PROMPT
   You are a patient chess coach. Before recommending a move, analyze the supplied
   position with Stockfish. Explain the idea in language appropriate for the
   player, then give one concrete variation in algebraic notation.
@@ -142,13 +143,13 @@ resource "dome_managed_agent" "chess_coach" {
   You provide advice; never make a move for the player.
 
   PROMPT
-  default_model       = dome_llm_pool.coach.name
-  gateway             = dome_gateway.chess.name
+  default_model          = dome_llm_pool.coach.name
+  gateway                = dome_gateway.chess.name
 }
 
 resource "dome_agent_rules_bundle" "chess_coach" {
-  workspace_id        = var.workspace_id
-  agent               = dome_managed_agent.chess_coach.name
+  workspace_id = var.workspace_id
+  agent        = dome_managed_agent.chess_coach.name
   files = {
     "chess-coach.cedar" = <<-CEDAR
     // Delegated coach: discover the engine, call it, and use only the coaching pool.
@@ -177,22 +178,22 @@ resource "dome_agent_rules_bundle" "chess_coach" {
 }
 
 resource "dome_managed_agent" "opponent_stockfish" {
-  workspace_id        = var.workspace_id
-  name                = "opponent-stockfish"
-  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.1" }
-  system_prompt       = <<-PROMPT
+  workspace_id  = var.workspace_id
+  name          = "opponent-stockfish"
+  metadata      = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.2" }
+  system_prompt = <<-PROMPT
   You are the standing Black opponent in a chess game. Use Stockfish to analyze
   the position and return exactly one legal move in algebraic notation. Do not
   explain your move unless asked.
 
   PROMPT
-  default_model       = dome_llm_pool.chess_balanced.name
-  gateway             = dome_gateway.chess.name
+  default_model = dome_llm_pool.chess_balanced.name
+  gateway       = dome_gateway.chess.name
 }
 
 resource "dome_agent_rules_bundle" "opponent_stockfish" {
-  workspace_id        = var.workspace_id
-  agent               = dome_managed_agent.opponent_stockfish.name
+  workspace_id = var.workspace_id
+  agent        = dome_managed_agent.opponent_stockfish.name
   files = {
     "opponent-stockfish.cedar" = <<-CEDAR
     // Standing opponent: discover the engine and choose only an opponent pool.
@@ -222,25 +223,25 @@ resource "dome_agent_rules_bundle" "opponent_stockfish" {
 }
 
 resource "dome_quota" "chess_coach_daily_spend" {
-  workspace_id        = var.workspace_id
-  dimension           = "llm"
-  unit                = "dome_usd"
-  subject_type        = "agent"
-  subject             = dome_managed_agent.chess_coach.name
-  scope               = "total"
-  window              = "daily"
-  limit_amount        = 5000000
-  name                = "chess-coach daily spend"
+  workspace_id = var.workspace_id
+  dimension    = "llm"
+  unit         = "dome_usd"
+  subject_type = "agent"
+  subject      = dome_managed_agent.chess_coach.name
+  scope        = "total"
+  window       = "daily"
+  limit_amount = 5000000
+  name         = "chess-coach daily spend"
 }
 
 resource "dome_quota" "opponent_stockfish_daily_spend" {
-  workspace_id        = var.workspace_id
-  dimension           = "llm"
-  unit                = "dome_usd"
-  subject_type        = "agent"
-  subject             = dome_managed_agent.opponent_stockfish.name
-  scope               = "total"
-  window              = "daily"
-  limit_amount        = 2000000
-  name                = "opponent-stockfish daily spend"
+  workspace_id = var.workspace_id
+  dimension    = "llm"
+  unit         = "dome_usd"
+  subject_type = "agent"
+  subject      = dome_managed_agent.opponent_stockfish.name
+  scope        = "total"
+  window       = "daily"
+  limit_amount = 2000000
+  name         = "opponent-stockfish daily spend"
 }
