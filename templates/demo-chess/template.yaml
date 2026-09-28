@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/demo-chess
-  version: "0.2.4"
+  version: "0.2.5"
   slug: demo-chess
   title: Play chess with a coach and a standing opponent
   target_query: chess coach standing opponent multi-agent
@@ -13,7 +13,7 @@ metadata:
     path: templates/demo-chess
   ui: chat
   tags:
-    domain: games
+    domain: miscellaneous
     shape: interactive-assistant
     business_pattern: orchestrates
     governance_interest: [tool-scoped-access, model-scoped-access]

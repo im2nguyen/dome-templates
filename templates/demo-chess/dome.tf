@@ -127,7 +127,7 @@ resource "dome_llm_pool_member" "chess_strong_sonnet" {
 resource "dome_managed_agent" "chess_coach" {
   workspace_id        = var.workspace_id
   name                = "chess-coach"
-  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.4" }
+  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.5" }
   system_prompt       = <<-PROMPT
   You are a patient chess coach. Before recommending a move, analyze the supplied
   position with Stockfish. Explain the idea in language appropriate for the
@@ -173,7 +173,7 @@ resource "dome_agent_rules_bundle" "chess_coach" {
 resource "dome_managed_agent" "opponent_stockfish" {
   workspace_id        = var.workspace_id
   name                = "opponent-stockfish"
-  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.4" }
+  metadata            = { "dome.template.name" = "im2nguyen/demo-chess", "dome.template.version" = "0.2.5" }
   system_prompt       = <<-PROMPT
   You are the standing Black opponent in a chess game. Use Stockfish to analyze
   the position and return exactly one legal move in algebraic notation. Do not
