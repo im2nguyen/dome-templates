@@ -2,16 +2,16 @@ apiVersion: templates.domesystems.ai/v1
 kind: Template
 
 metadata:
-  name: im2nguyen/ai-agent-for-tinyfish
+  name: im2nguyen/tinyfish
   version: "0.1.0"
-  slug: ai-agent-for-tinyfish
+  slug: tinyfish
   title: Answer questions from the live web
   target_query: tinyfish web research agent
   summary: A managed research agent that searches the live web, reads sources, and answers with citations.
   visibility: unlisted
   source:
     repository: https://github.com/im2nguyen/dome-templates
-    path: templates/ai-agent-for-tinyfish
+    path: templates/tinyfish
   ui: chat
   tags:
     domain: research

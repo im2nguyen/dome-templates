@@ -82,7 +82,7 @@ resource "dome_llm_pool_member" "researcher_pool_sonnet" {
 resource "dome_managed_agent" "web_researcher" {
   workspace_id        = var.workspace_id
   name                = "web-researcher"
-  metadata            = { "dome.template.name" = "im2nguyen/ai-agent-for-tinyfish", "dome.template.version" = "0.1.0" }
+  metadata            = { "dome.template.name" = "im2nguyen/tinyfish", "dome.template.version" = "0.1.0" }
   system_prompt       = <<-PROMPT
   You answer questions using the live web through TinyFish.
 
