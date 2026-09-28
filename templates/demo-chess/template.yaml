@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/demo-chess
-  version: "0.2.3"
+  version: "0.2.4"
   slug: demo-chess
   title: Play chess with a coach and a standing opponent
   target_query: chess coach standing opponent multi-agent
@@ -20,6 +20,7 @@ metadata:
 
 variables:
   stockfish_mcp_url:
+    default: https://demo-mcp.domesystems.ai/chess/mcp
     description: The public /mcp URL exposed by the demo-chess application.
   anthropic_api_key:
     sensitive: true
