@@ -31,7 +31,7 @@ gateways:
     pools: [hello-dome-pool]
 
 models:
-  - name: haiku
+  - name: hello-model
     provider_id: anthropic
     provider_config: { model: claude-haiku-4-5-20251001 }
     auth_method: api-key
@@ -41,7 +41,7 @@ models:
 
 pools:
   - name: hello-dome-pool
-    members: [haiku]
+    members: [hello-model]
 
 agents:
   - name: hello-dome

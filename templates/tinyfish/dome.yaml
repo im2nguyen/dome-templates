@@ -48,7 +48,7 @@ tool_connections:
     secret_values: { Authorization: var.tinyfish_api_key }
 
 models:
-  - name: sonnet
+  - name: tinyfish-model
     provider_id: anthropic
     provider_config: { model: claude-sonnet-5 }
     auth_method: api-key
@@ -58,7 +58,7 @@ models:
 
 pools:
   - name: researcher-pool
-    members: [sonnet]
+    members: [tinyfish-model]
 
 agents:
   - name: web-researcher
