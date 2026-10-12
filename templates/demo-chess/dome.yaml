@@ -8,6 +8,7 @@ metadata:
   title: Play chess with a coach and a standing opponent
   target_query: chess coach standing opponent multi-agent
   summary: A two-agent chess app with delegated coaching and a standing Stockfish opponent.
+  guide: GUIDE.md
   source:
     repository: https://github.com/im2nguyen/dome-templates
     path: templates/demo-chess
