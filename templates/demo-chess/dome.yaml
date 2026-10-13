@@ -8,6 +8,7 @@ metadata:
   title: Play chess with a coach and a standing opponent
   target_query: chess coach standing opponent multi-agent
   summary: A two-agent chess app with delegated coaching and a standing Stockfish opponent.
+  guide: GUIDE.md
   source:
     repository: https://github.com/im2nguyen/dome-templates
     path: templates/demo-chess
@@ -43,7 +44,7 @@ tool_connections:
     credential_type: none
 
 models:
-  - name: sonnet
+  - name: chess-coach-model
     provider_id: anthropic
     provider_config: { model: claude-sonnet-4-6 }
     auth_method: api-key
@@ -53,13 +54,13 @@ models:
 
 pools:
   - name: coach
-    members: [sonnet]
+    members: [chess-coach-model]
   - name: chess-fast
-    members: [sonnet]
+    members: [chess-coach-model]
   - name: chess-balanced
-    members: [sonnet]
+    members: [chess-coach-model]
   - name: chess-strong
-    members: [sonnet]
+    members: [chess-coach-model]
 
 agents:
   - name: chess-coach

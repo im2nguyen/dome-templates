@@ -7,6 +7,7 @@ metadata:
   slug: haiku
   title: Motivational Haiku
   summary: A focused chat agent that turns any challenge into an original motivational haiku.
+  guide: GUIDE.md
   source:
     repository: https://github.com/im2nguyen/dome-templates
     path: templates/haiku
@@ -30,7 +31,7 @@ gateways:
     pools: [motivational-haiku-pool]
 
 models:
-  - name: haiku
+  - name: assistant-model
     provider_id: anthropic
     provider_config: { model: claude-haiku-4-5-20251001 }
     auth_method: api-key
@@ -40,7 +41,7 @@ models:
 
 pools:
   - name: motivational-haiku-pool
-    members: [haiku]
+    members: [assistant-model]
 
 agents:
   - name: motivational-haiku
