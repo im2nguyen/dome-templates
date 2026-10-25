@@ -13,7 +13,7 @@ Publishable, importable Dome templates maintained by
 
 ## Run a template locally
 
-`template.yaml` is the source of truth. Generate `dome.tf` from it before an
+`dome.yaml` is the committed source of truth. Generate `dome.tf` from it before an
 import; the generated Terraform creates the gateways, connections, model pools,
 agents, keys, and governance controls declared by the template. Install the
 Dome CLI and authenticate before the first run:
@@ -48,7 +48,7 @@ Compose is required to start the local runtime.
 
 ## Publish a release
 
-Each package has its own `template.yaml`. Releases are immutable, so increase
+Each package has its own `dome.yaml`. Releases are immutable, so increase
 `metadata.version` before publishing another release.
 
 ```sh
@@ -60,3 +60,5 @@ npx @domesystems/templates publish --server https://templates-registry-dev.domes
 The checkout must be committed and clean. The first publish also requires a
 Registry login with the GitHub App linked to this repository. Registry
 publishing packages the template source; it does not import Dome resources.
+Generated `dome.tf`, `dome.oauth.tf`, and local `terraform.tfvars` are ignored
+and must never be committed.

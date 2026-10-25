@@ -1,4 +1,7 @@
 .env
+.dome/
 .dome-compose.yaml
 .dome-template-lock.yaml
-
+dome.tf
+dome.oauth.tf
+terraform.tfvars
