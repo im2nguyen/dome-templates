@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/baseten-chat
-  version: "0.1.0"
+  version: "0.1.1"
   slug: baseten-chat
   title: Chat through Baseten
   target_query: baseten model api chat agent
@@ -22,7 +22,7 @@ metadata:
 variables:
   baseten_api_key:
     sensitive: true
-    description: A Baseten API key for the account that should own model usage.
+    description: A Baseten Authorization header value in the form Bearer followed by the API key.
 
 gateways:
   - name: baseten-chat

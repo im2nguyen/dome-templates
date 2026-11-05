@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/together-chat
-  version: "0.1.0"
+  version: "0.1.1"
   slug: together-chat
   title: Chat through Together AI
   target_query: together ai chat agent
@@ -22,7 +22,7 @@ metadata:
 variables:
   together_api_key:
     sensitive: true
-    description: A Together AI API key for the account that should own model usage.
+    description: A Together AI Authorization header value in the form Bearer followed by the API key.
 
 gateways:
   - name: together-chat

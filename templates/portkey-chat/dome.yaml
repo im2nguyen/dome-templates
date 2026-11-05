@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/portkey-chat
-  version: "0.1.0"
+  version: "0.1.1"
   slug: portkey-chat
   title: Chat through Portkey
   target_query: portkey ai gateway chat agent
@@ -22,7 +22,7 @@ metadata:
 variables:
   portkey_api_key:
     sensitive: true
-    description: A Portkey API key for the account that should own model usage.
+    description: A raw Portkey API key for the account that should own model usage.
   portkey_model:
     default: "@openai-provider/gpt-4o"
     description: A Portkey Model Catalog model identifier.

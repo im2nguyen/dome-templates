@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/fireworks-chat
-  version: "0.1.0"
+  version: "0.1.1"
   slug: fireworks-chat
   title: Chat through Fireworks AI
   target_query: fireworks ai chat agent
@@ -22,7 +22,7 @@ metadata:
 variables:
   fireworks_api_key:
     sensitive: true
-    description: A Fireworks AI API key for the account that should own model usage.
+    description: A Fireworks AI Authorization header value in the form Bearer followed by the API key.
 
 gateways:
   - name: fireworks-chat

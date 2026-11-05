@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/openrouter-chat
-  version: "0.1.0"
+  version: "0.1.1"
   slug: openrouter-chat
   title: Chat through OpenRouter
   target_query: openrouter multi model chat agent
@@ -22,7 +22,7 @@ metadata:
 variables:
   openrouter_api_key:
     sensitive: true
-    description: An OpenRouter API key for the account that should own model usage.
+    description: An OpenRouter Authorization header value in the form Bearer followed by the API key.
 
 gateways:
   - name: openrouter-chat

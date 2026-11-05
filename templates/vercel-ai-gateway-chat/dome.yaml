@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/vercel-ai-gateway-chat
-  version: "0.1.0"
+  version: "0.1.1"
   slug: vercel-ai-gateway-chat
   title: Chat through Vercel AI Gateway
   target_query: vercel ai gateway openai compatible chat agent
@@ -22,7 +22,7 @@ metadata:
 variables:
   vercel_ai_gateway_api_key:
     sensitive: true
-    description: A Vercel AI Gateway API key for the Vercel team that should own model usage.
+    description: A Vercel AI Gateway Authorization header value in the form Bearer followed by the API key.
 
 gateways:
   - name: vercel-ai-gateway-chat

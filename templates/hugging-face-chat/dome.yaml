@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/hugging-face-chat
-  version: "0.1.0"
+  version: "0.1.1"
   slug: hugging-face-chat
   title: Chat through Hugging Face Inference Providers
   target_query: hugging face inference providers chat agent
@@ -22,7 +22,7 @@ metadata:
 variables:
   hugging_face_api_token:
     sensitive: true
-    description: A Hugging Face token permitted to make Inference Provider calls.
+    description: A Hugging Face Authorization header value in the form Bearer followed by a token.
 
 gateways:
   - name: hugging-face-chat
