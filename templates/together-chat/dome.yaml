@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/together-chat
-  version: "0.1.1"
+  version: "0.1.2"
   slug: together-chat
   title: Chat through Together AI
   target_query: together ai chat agent
@@ -36,7 +36,7 @@ models:
     provider_id: together
     provider_config:
       endpoint: https://api.together.xyz/v1
-      model: meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo
+      model: zai-org/GLM-5.3-Flash
     auth_method: api-key
     credential_type: shared
     managed_header_name: Authorization
