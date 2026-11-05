@@ -1,0 +1,55 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/hugging-face-chat
+  version: "0.1.0"
+  slug: hugging-face-chat
+  title: Chat through Hugging Face Inference Providers
+  target_query: hugging face inference providers chat agent
+  summary: A Dome-managed chat agent that uses Hugging Face Inference Providers.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/hugging-face-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  hugging_face_api_token:
+    sensitive: true
+    description: A Hugging Face token permitted to make Inference Provider calls.
+
+gateways:
+  - name: hugging-face-chat
+    description: Dome gateway for the managed chat agent backed by Hugging Face Inference Providers.
+    is_default: true
+    safe_tool_names: true
+    pools: [hugging-face-pool]
+
+models:
+  - name: hugging-face-model
+    provider_id: openai_compatible
+    provider_config:
+      endpoint: https://router.huggingface.co/v1
+      model: "openai/gpt-oss-120b:fastest"
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.hugging_face_api_token }
+
+pools:
+  - name: hugging-face-pool
+    members: [hugging-face-model]
+
+agents:
+  - name: hugging-face-chat
+    type: managed
+    gateway: hugging-face-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: hugging-face-pool

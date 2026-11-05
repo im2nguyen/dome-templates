@@ -1,0 +1,55 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/together-chat
+  version: "0.1.0"
+  slug: together-chat
+  title: Chat through Together AI
+  target_query: together ai chat agent
+  summary: A Dome-managed chat agent that uses Together AI for model inference.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/together-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  together_api_key:
+    sensitive: true
+    description: A Together AI API key for the account that should own model usage.
+
+gateways:
+  - name: together-chat
+    description: Dome gateway for the managed chat agent backed by Together AI.
+    is_default: true
+    safe_tool_names: true
+    pools: [together-pool]
+
+models:
+  - name: together-model
+    provider_id: together
+    provider_config:
+      endpoint: https://api.together.xyz/v1
+      model: meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.together_api_key }
+
+pools:
+  - name: together-pool
+    members: [together-model]
+
+agents:
+  - name: together-chat
+    type: managed
+    gateway: together-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: together-pool

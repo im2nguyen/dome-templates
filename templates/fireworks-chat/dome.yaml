@@ -1,0 +1,55 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/fireworks-chat
+  version: "0.1.0"
+  slug: fireworks-chat
+  title: Chat through Fireworks AI
+  target_query: fireworks ai chat agent
+  summary: A Dome-managed chat agent that uses Fireworks AI for model inference.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/fireworks-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  fireworks_api_key:
+    sensitive: true
+    description: A Fireworks AI API key for the account that should own model usage.
+
+gateways:
+  - name: fireworks-chat
+    description: Dome gateway for the managed chat agent backed by Fireworks AI.
+    is_default: true
+    safe_tool_names: true
+    pools: [fireworks-pool]
+
+models:
+  - name: fireworks-model
+    provider_id: fireworks
+    provider_config:
+      endpoint: https://api.fireworks.ai/inference/v1
+      model: accounts/fireworks/models/llama-v3p1-8b-instruct
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.fireworks_api_key }
+
+pools:
+  - name: fireworks-pool
+    members: [fireworks-model]
+
+agents:
+  - name: fireworks-chat
+    type: managed
+    gateway: fireworks-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: fireworks-pool

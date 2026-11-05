@@ -1,0 +1,55 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/openrouter-chat
+  version: "0.1.0"
+  slug: openrouter-chat
+  title: Chat through OpenRouter
+  target_query: openrouter multi model chat agent
+  summary: A Dome-managed chat agent that uses OpenRouter to access its model catalog.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/openrouter-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  openrouter_api_key:
+    sensitive: true
+    description: An OpenRouter API key for the account that should own model usage.
+
+gateways:
+  - name: openrouter-chat
+    description: Dome gateway for the managed chat agent backed by OpenRouter.
+    is_default: true
+    safe_tool_names: true
+    pools: [openrouter-pool]
+
+models:
+  - name: openrouter-model
+    provider_id: openrouter
+    provider_config:
+      endpoint: https://openrouter.ai/api/v1
+      model: openai/gpt-4.1-mini
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.openrouter_api_key }
+
+pools:
+  - name: openrouter-pool
+    members: [openrouter-model]
+
+agents:
+  - name: openrouter-chat
+    type: managed
+    gateway: openrouter-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: openrouter-pool

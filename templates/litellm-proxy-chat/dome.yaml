@@ -1,0 +1,60 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/litellm-proxy-chat
+  version: "0.1.0"
+  slug: litellm-proxy-chat
+  title: Chat through LiteLLM Proxy
+  target_query: litellm proxy openai compatible chat agent
+  summary: A Dome-managed chat agent that uses a customer-managed LiteLLM Proxy.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/litellm-proxy-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  litellm_proxy_api_key:
+    sensitive: true
+    description: A LiteLLM virtual key accepted by the configured proxy.
+  litellm_proxy_endpoint:
+    description: The full OpenAI-compatible base URL of the LiteLLM Proxy.
+  litellm_proxy_model:
+    default: gpt-4.1-mini
+    description: The LiteLLM model alias that the proxy should serve.
+
+gateways:
+  - name: litellm-proxy-chat
+    description: Dome gateway for the managed chat agent backed by LiteLLM Proxy.
+    is_default: true
+    safe_tool_names: true
+    pools: [litellm-proxy-pool]
+
+models:
+  - name: litellm-proxy-model
+    provider_id: openai_compatible
+    provider_config:
+      endpoint: var.litellm_proxy_endpoint
+      model: var.litellm_proxy_model
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.litellm_proxy_api_key }
+
+pools:
+  - name: litellm-proxy-pool
+    members: [litellm-proxy-model]
+
+agents:
+  - name: litellm-proxy-chat
+    type: managed
+    gateway: litellm-proxy-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: litellm-proxy-pool
