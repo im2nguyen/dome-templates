@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/cloudflare-ai-gateway-chat
-  version: "0.1.1"
+  version: "0.1.2"
   slug: cloudflare-ai-gateway-chat
   title: Chat through Cloudflare AI Gateway
   target_query: cloudflare ai gateway chat agent
@@ -38,7 +38,7 @@ models:
     provider_id: openai_compatible
     provider_config:
       endpoint: var.cloudflare_ai_gateway_endpoint
-      model: "@cf/moonshotai/kimi-k2.6"
+      model: "@cf/moonshotai/kimi-k3"
     auth_method: api-key
     credential_type: shared
     managed_header_name: Authorization
