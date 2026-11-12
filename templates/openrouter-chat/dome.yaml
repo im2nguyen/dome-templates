@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/openrouter-chat
-  version: "0.1.1"
+  version: "0.1.2"
   slug: openrouter-chat
   title: Chat through OpenRouter
   target_query: openrouter multi model chat agent

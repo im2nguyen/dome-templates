@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/cerebras-chat
-  version: "0.1.1"
+  version: "0.1.2"
   slug: cerebras-chat
   title: Chat through Cerebras
   target_query: cerebras inference chat agent

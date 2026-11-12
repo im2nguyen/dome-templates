@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/hugging-face-chat
-  version: "0.1.1"
+  version: "0.1.2"
   slug: hugging-face-chat
   title: Chat through Hugging Face Inference Providers
   target_query: hugging face inference providers chat agent

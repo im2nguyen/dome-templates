@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/portkey-chat
-  version: "0.1.1"
+  version: "0.1.2"
   slug: portkey-chat
   title: Chat through Portkey
   target_query: portkey ai gateway chat agent
