@@ -3,7 +3,7 @@ kind: Template
 
 metadata:
   name: im2nguyen/fireworks-chat
-  version: "0.1.1"
+  version: "0.1.2"
   slug: fireworks-chat
   title: Chat through Fireworks AI
   target_query: fireworks ai chat agent
