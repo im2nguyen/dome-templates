@@ -1,0 +1,58 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/portkey-chat
+  version: "0.1.2"
+  slug: portkey-chat
+  title: Chat through Portkey
+  target_query: portkey ai gateway chat agent
+  summary: A Dome-managed chat agent that uses Portkey's AI gateway and Model Catalog.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/portkey-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  portkey_api_key:
+    sensitive: true
+    description: A raw Portkey API key for the account that should own model usage.
+  portkey_model:
+    default: "@openai-provider/gpt-4o"
+    description: A Portkey Model Catalog model identifier.
+
+gateways:
+  - name: portkey-chat
+    description: Dome gateway for the managed chat agent backed by Portkey.
+    is_default: true
+    safe_tool_names: true
+    pools: [portkey-pool]
+
+models:
+  - name: portkey-model
+    provider_id: openai_compatible
+    provider_config:
+      endpoint: https://api.portkey.ai/v1
+      model: var.portkey_model
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: x-portkey-api-key
+    secret_values: { x-portkey-api-key: var.portkey_api_key }
+
+pools:
+  - name: portkey-pool
+    members: [portkey-model]
+
+agents:
+  - name: portkey-chat
+    type: managed
+    gateway: portkey-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: portkey-pool

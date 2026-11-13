@@ -1,0 +1,55 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/baseten-chat
+  version: "0.1.2"
+  slug: baseten-chat
+  title: Chat through Baseten
+  target_query: baseten model api chat agent
+  summary: A Dome-managed chat agent that uses Baseten Model APIs for inference.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/baseten-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  baseten_api_key:
+    sensitive: true
+    description: A Baseten Authorization header value in the form Bearer followed by the API key.
+
+gateways:
+  - name: baseten-chat
+    description: Dome gateway for the managed chat agent backed by Baseten.
+    is_default: true
+    safe_tool_names: true
+    pools: [baseten-pool]
+
+models:
+  - name: baseten-model
+    provider_id: openai_compatible
+    provider_config:
+      endpoint: https://inference.baseten.co/v1
+      model: zai-org/GLM-5.3
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.baseten_api_key }
+
+pools:
+  - name: baseten-pool
+    members: [baseten-model]
+
+agents:
+  - name: baseten-chat
+    type: managed
+    gateway: baseten-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: baseten-pool

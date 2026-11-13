@@ -1,0 +1,55 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/vercel-ai-gateway-chat
+  version: "0.1.2"
+  slug: vercel-ai-gateway-chat
+  title: Chat through Vercel AI Gateway
+  target_query: vercel ai gateway openai compatible chat agent
+  summary: A Dome-managed chat agent that uses Vercel AI Gateway for model routing and observability.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/vercel-ai-gateway-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  vercel_ai_gateway_api_key:
+    sensitive: true
+    description: A Vercel AI Gateway Authorization header value in the form Bearer followed by the API key.
+
+gateways:
+  - name: vercel-ai-gateway-chat
+    description: Dome gateway for the managed chat agent backed by Vercel AI Gateway.
+    is_default: true
+    safe_tool_names: true
+    pools: [vercel-ai-gateway-pool]
+
+models:
+  - name: vercel-ai-gateway-model
+    provider_id: openai_compatible
+    provider_config:
+      endpoint: https://ai-gateway.vercel.sh/v1
+      model: zai/glm-5.3
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.vercel_ai_gateway_api_key }
+
+pools:
+  - name: vercel-ai-gateway-pool
+    members: [vercel-ai-gateway-model]
+
+agents:
+  - name: vercel-ai-gateway-chat
+    type: managed
+    gateway: vercel-ai-gateway-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: vercel-ai-gateway-pool

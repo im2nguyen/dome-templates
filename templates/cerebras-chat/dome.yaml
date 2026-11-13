@@ -1,0 +1,55 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/cerebras-chat
+  version: "0.1.2"
+  slug: cerebras-chat
+  title: Chat through Cerebras
+  target_query: cerebras inference chat agent
+  summary: A Dome-managed chat agent that uses Cerebras for fast model inference.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/cerebras-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  cerebras_api_key:
+    sensitive: true
+    description: A Cerebras Authorization header value in the form Bearer followed by the API key.
+
+gateways:
+  - name: cerebras-chat
+    description: Dome gateway for the managed chat agent backed by Cerebras.
+    is_default: true
+    safe_tool_names: true
+    pools: [cerebras-pool]
+
+models:
+  - name: cerebras-model
+    provider_id: cerebras
+    provider_config:
+      endpoint: https://api.cerebras.ai/v1
+      model: qwen-3.8-27b
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.cerebras_api_key }
+
+pools:
+  - name: cerebras-pool
+    members: [cerebras-model]
+
+agents:
+  - name: cerebras-chat
+    type: managed
+    gateway: cerebras-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: cerebras-pool

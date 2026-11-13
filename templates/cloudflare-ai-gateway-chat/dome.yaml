@@ -1,0 +1,57 @@
+apiVersion: templates.domesystems.ai/v1
+kind: Template
+
+metadata:
+  name: im2nguyen/cloudflare-ai-gateway-chat
+  version: "0.1.5"
+  slug: cloudflare-ai-gateway-chat
+  title: Chat through Cloudflare AI Gateway
+  target_query: cloudflare ai gateway chat agent
+  summary: A Dome-managed chat agent that uses Cloudflare AI Gateway for model access and observability.
+  guide: GUIDE.md
+  source:
+    repository: https://github.com/im2nguyen/dome-templates
+    path: templates/cloudflare-ai-gateway-chat
+  ui: chat
+  tags:
+    domain: productivity
+    shape: interactive-assistant
+    business_pattern: consumes
+    governance_interest: [model-scoped-access]
+
+variables:
+  cloudflare_ai_gateway_api_token:
+    sensitive: true
+    description: A Cloudflare Authorization header value in the form Bearer followed by an API token.
+  cloudflare_account_id:
+    description: The Cloudflare account ID that owns the AI Gateway.
+
+gateways:
+  - name: cloudflare-ai-gateway-chat
+    description: Dome gateway for the managed chat agent backed by Cloudflare AI Gateway.
+    is_default: true
+    safe_tool_names: true
+    pools: [cloudflare-ai-gateway-pool]
+
+models:
+  - name: cloudflare-ai-gateway-model
+    provider_id: openai_compatible
+    provider_config:
+      endpoint: "https://api.cloudflare.com/client/v4/accounts/${var.cloudflare_account_id}/ai/v1"
+      model: "@cf/meta/llama-3.1-8b-instruct-fp8-fast"
+    auth_method: api-key
+    credential_type: shared
+    managed_header_name: Authorization
+    secret_values: { Authorization: var.cloudflare_ai_gateway_api_token }
+
+pools:
+  - name: cloudflare-ai-gateway-pool
+    members: [cloudflare-ai-gateway-model]
+
+agents:
+  - name: cloudflare-ai-gateway-chat
+    type: managed
+    gateway: cloudflare-ai-gateway-chat
+    system_prompt:
+      path: app/instructions.md
+    default_model: cloudflare-ai-gateway-pool
